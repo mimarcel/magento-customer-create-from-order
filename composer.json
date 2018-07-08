@@ -1,4 +1,5 @@
 {
     "name": "mimarcel/magento-customer-create-from-order",
+    "type": "magento-module",
     "require": {}
 }
