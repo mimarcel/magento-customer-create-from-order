@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Max_CustomerCreateFromOrder>
+            <version>0.0.1</version>
+        </Max_CustomerCreateFromOrder>
+    </modules>
+</config>

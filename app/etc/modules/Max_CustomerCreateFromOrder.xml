@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Max_CustomerCreateFromOrder>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Max_CustomerCreateFromOrder>
+    </modules>
+</config>
