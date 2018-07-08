@@ -41,3 +41,6 @@
 /var/package/*
 !/var/package/*.xml
 
+
+.idea
+/vendor/
