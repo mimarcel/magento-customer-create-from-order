@@ -1,6 +1,8 @@
 <?php
 class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController extends Mage_Adminhtml_Controller_Action
 {
+    const GENERATE_PASSWORD_LENGTH = 20;
+
     public function createAction()
     {
         if ($order = $this->_initOrder()) {
@@ -12,6 +14,7 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
                 $this->_getConnection()->commit();
                 // @todo Send email to customer
                 $this->_getSession()->addSuccess($this->__('Customer was successfully created.'));
+                $this->_getSession()->addNotice($this->__('Generated customer password: %s', $customer->getData('password')));
             } catch (Mage_Core_Exception $ex) {
                 $this->_getConnection()->rollBack();
                 $this->_getSession()->addError($ex->getMessage());
@@ -112,7 +115,9 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
      */
     protected function _generatePassword($customer)
     {
-        // @todo Set password
+        $customer->setPasswordCreatedAt(time());
+        $customer->setForceConfirmed(true);
+        $customer->setPassword($customer->generatePassword(self::GENERATE_PASSWORD_LENGTH));
     }
 
     /**
