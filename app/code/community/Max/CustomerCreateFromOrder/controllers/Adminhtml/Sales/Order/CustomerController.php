@@ -5,8 +5,13 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
     {
         if ($order = $this->_initOrder()) {
             try {
+                $customer = $this->_createCustomerFromOrder($order);
+                $this->_linkCustomerToOrder($customer, $order);
+
                 $this->_getSession()->addSuccess($this->__('Customer was successfully created.'));
-            } catch (\Exception $ex) {
+            } catch (Mage_Core_Exception $ex) {
+                $this->_getSession()->addError($ex->getMessage());
+            } catch (Exception $ex) {
                 $this->_getSession()->addError($this->__('An unexpected error occurred during customer creation.'));
                 Mage::logException($ex);
             }
@@ -35,5 +40,63 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
         }
 
         return $order;
+    }
+
+    /**
+     * @param Mage_Sales_Model_Order $order
+     *
+     * @return Mage_Customer_Model_Customer
+     *
+     * @throws Exception
+     */
+    protected function _createCustomerFromOrder($order)
+    {
+        /* @var Mage_Customer_Model_Customer $customer */
+        $customer = Mage::getModel('customer/customer');
+        $customer->addData(array(
+            'dob' => $order->getCustomerDob(),
+            'email' => $order->getCustomerEmail(),
+            'firstname' => $order->getCustomerFirstname(),
+            'gender' => $order->getCustomerGender(),
+            'group_id' => $this->_getCustomerCreateFromOrderHelper()->getCustomerGroupId(),
+            'lastname' => $order->getCustomerLastname(),
+            'middlename' => $order->getCustomerMiddlename(),
+            'prefix' => $order->getCustomerPrefix(),
+            'store_id' => $order->getStoreId(),
+            'suffix' => $order->getCustomerSuffix(),
+            'taxvat' => $order->getCustomerTaxvat(),
+            'website_id' => $order->getStore()->getWebsiteId(),
+        ));
+        $customer->save();
+        // @todo add Addresses
+        // @todo Set password
+        // @todo Send email
+
+        if (!$customer->getId()) {
+            throw new \Exception($this->__('Unable to create customer.'));
+        }
+
+        return $customer;
+    }
+
+
+    /**
+     * @return Max_CustomerCreateFromOrder_Helper_Data
+     */
+    private function _getCustomerCreateFromOrderHelper()
+    {
+        return Mage::helper('customerCreateFromOrder');
+    }
+
+    /**
+     * @param Mage_Customer_Model_Customer $customer
+     * @param Mage_Sales_Model_Order $order
+     */
+    private function _linkCustomerToOrder($customer, $order)
+    {
+        $order->setCustomerId($customer->getId());
+        $order->setCustomerIsGuest(false);
+        $order->setCustomerGroupId($customer->getGroupId());
+        $order->save();
     }
 }
