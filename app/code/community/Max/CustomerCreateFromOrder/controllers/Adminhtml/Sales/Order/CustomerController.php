@@ -93,7 +93,7 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
      * @param Mage_Customer_Model_Customer $customer
      * @param Mage_Sales_Model_Order $order
      */
-    private function _copyCustomerAttributesFromOrder($customer, $order)
+    protected function _copyCustomerAttributesFromOrder($customer, $order)
     {
         $customer->addData(array(
             'dob' => $order->getCustomerDob(),
@@ -165,7 +165,7 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
     /**
      * @return Max_CustomerCreateFromOrder_Helper_Data
      */
-    private function _getCustomerCreateFromOrderHelper()
+    protected function _getCustomerCreateFromOrderHelper()
     {
         return Mage::helper('customerCreateFromOrder');
     }
@@ -174,7 +174,7 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
      * @param Mage_Customer_Model_Customer $customer
      * @param Mage_Sales_Model_Order $order
      */
-    private function _linkCustomerToOrder($customer, $order)
+    protected function _linkCustomerToOrder($customer, $order)
     {
         $order->setCustomerId($customer->getId());
         $order->setCustomerIsGuest(false);
@@ -188,7 +188,7 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
     /**
      * @param Mage_Customer_Model_Customer $customer
      */
-    private function _notifyCustomer($customer)
+    protected function _notifyCustomer($customer)
     {
         if ($customer->isConfirmationRequired()) {
             $customer->sendNewAccountEmail('confirmation', '', $customer->getData('store_id'));
