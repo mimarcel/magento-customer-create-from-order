@@ -12,9 +12,10 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
                 $this->_linkCustomerToOrder($customer, $order);
 
                 $this->_getConnection()->commit();
-                // @todo Send email to customer
+
+                $this->_notifyCustomer($customer);
+
                 $this->_getSession()->addSuccess($this->__('Customer was successfully created.'));
-                $this->_getSession()->addNotice($this->__('Generated customer password: %s', $customer->getData('password')));
             } catch (Mage_Core_Exception $ex) {
                 $this->_getConnection()->rollBack();
                 $this->_getSession()->addError($ex->getMessage());
@@ -150,5 +151,17 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
         Mage::dispatchEvent('sales_link_customer_to_order', array('customer' => $customer, 'order' => $order));
 
         $order->save();
+    }
+
+    /**
+     * @param Mage_Customer_Model_Customer $customer
+     */
+    private function _notifyCustomer($customer)
+    {
+        if ($customer->isConfirmationRequired()) {
+            $customer->sendNewAccountEmail('confirmation', '', $customer->getData('store_id'));
+        } else {
+            $customer->sendNewAccountEmail('registered', '', $customer->getData('store_id'));
+        }
     }
 }
