@@ -5,4 +5,29 @@
             <version>0.0.1</version>
         </Max_CustomerCreateFromOrder>
     </modules>
+    <adminhtml>
+        <events>
+            <adminhtml_widget_container_html_before>
+                <observers>
+                    <customercreateFromOrder_adminhtmlWidgetContainerHtmlBefore>
+                        <class>customerCreateFromOrder/observer</class>
+                        <type>singleton</type>
+                        <method>adminhtmlWidgetContainerHtmlBefore</method>
+                    </customercreateFromOrder_adminhtmlWidgetContainerHtmlBefore>
+                </observers>
+            </adminhtml_widget_container_html_before>
+        </events>
+    </adminhtml>
+    <global>
+        <helpers>
+            <customerCreateFromOrder>
+                <class>Max_CustomerCreateFromOrder_Helper</class>
+            </customerCreateFromOrder>
+        </helpers>
+        <models>
+            <customerCreateFromOrder>
+                <class>Max_CustomerCreateFromOrder_Model</class>
+            </customerCreateFromOrder>
+        </models>
+    </global>
 </config>
