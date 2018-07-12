@@ -5,13 +5,17 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
     {
         if ($order = $this->_initOrder()) {
             try {
+                $this->_getConnection()->beginTransaction();
                 $customer = $this->_createCustomerFromOrder($order);
                 $this->_linkCustomerToOrder($customer, $order);
 
+                $this->_getConnection()->commit();
                 $this->_getSession()->addSuccess($this->__('Customer was successfully created.'));
             } catch (Mage_Core_Exception $ex) {
+                $this->_getConnection()->rollBack();
                 $this->_getSession()->addError($ex->getMessage());
             } catch (Exception $ex) {
+                $this->_getConnection()->rollBack();
                 $this->_getSession()->addError($this->__('An unexpected error occurred during customer creation.'));
                 Mage::logException($ex);
             }
@@ -40,6 +44,17 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
         }
 
         return $order;
+    }
+
+    /**
+     * @return Varien_Db_Adapter_Interface
+     */
+    protected function _getConnection()
+    {
+        /** @var Mage_Core_Model_Resource $resource */
+        $resource = Mage::getSingleton('core/resource');
+
+        return $resource->getConnection('core_write');
     }
 
     /**
