@@ -127,7 +127,39 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
      */
     protected function _createCustomerAddressesFromOrder($customer, $order)
     {
-        // @todo add Addresses
+        foreach ($order->getAddressesCollection() as $orderAddress) {
+            /* @var Mage_Sales_Model_Order_Address $orderAddress */
+            /* @var Mage_Customer_Model_Address $customerAddress */
+            $customerAddress = Mage::getModel('customer/address');
+            $customerAddress->setCustomerId($customer->getId());
+            $this->_copyAddressAttributesFromOrderAddress($customerAddress, $orderAddress);
+            $customerAddress->save();
+
+            if ($order->getShippingAddressId() == $orderAddress->getId()) {
+                $customer->setData('default_shipping', $customerAddress->getId());
+            }
+            if ($order->getBillingAddressId() == $orderAddress->getId()) {
+                $customer->setData('default_billing', $customerAddress->getId());
+            }
+        }
+
+        $customer->save();
+    }
+
+    /**
+     * @param Mage_Customer_Model_Address $customerAddress
+     * @param Mage_Sales_Model_Order_Address $orderAddress
+     */
+    protected function _copyAddressAttributesFromOrderAddress($customerAddress, $orderAddress)
+    {
+        $attributeCodes = Mage::getSingleton('eav/config')
+            ->getEntityAttributeCodes($customerAddress->getEntityType());
+
+        foreach ($attributeCodes as $attributeCode) {
+            /* @var Mage_Customer_Model_Attribute $attribute */
+            $value = $orderAddress->getData($attributeCode);
+            $customerAddress->setData($attributeCode, $value);
+        }
     }
 
     /**
