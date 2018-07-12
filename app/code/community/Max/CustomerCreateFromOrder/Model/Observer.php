@@ -40,6 +40,6 @@ class Max_CustomerCreateFromOrder_Model_Observer
      */
     private function getUrl($block)
     {
-        return $block->getUrl('*/sales_order/create_customer');
+        return $block->getUrl('*/sales_order_customer/create');
     }
 }

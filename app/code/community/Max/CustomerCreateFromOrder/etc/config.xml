@@ -5,6 +5,17 @@
             <version>0.0.1</version>
         </Max_CustomerCreateFromOrder>
     </modules>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Max_CustomerCreateFromOrder before="Mage_Adminhtml">Max_CustomerCreateFromOrder_Adminhtml</Max_CustomerCreateFromOrder>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
     <adminhtml>
         <events>
             <adminhtml_widget_container_html_before>
