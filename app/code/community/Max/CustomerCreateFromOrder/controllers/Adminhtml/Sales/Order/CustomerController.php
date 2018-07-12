@@ -10,6 +10,7 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
                 $this->_linkCustomerToOrder($customer, $order);
 
                 $this->_getConnection()->commit();
+                // @todo Send email to customer
                 $this->_getSession()->addSuccess($this->__('Customer was successfully created.'));
             } catch (Mage_Core_Exception $ex) {
                 $this->_getConnection()->rollBack();
@@ -68,6 +69,28 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
     {
         /* @var Mage_Customer_Model_Customer $customer */
         $customer = Mage::getModel('customer/customer');
+        $this->_copyCustomerAttributesFromOrder($customer, $order);
+        $this->_generatePassword($customer);
+
+        Mage::dispatchEvent('sales_create_customer_from_order', array('customer' => $customer, 'order' => $order));
+
+        $customer->save();
+
+        if (!$customer->getId()) {
+            throw new \Exception($this->__('Unable to create customer.'));
+        }
+
+        $this->_createCustomerAddressesFromOrder($customer, $order);
+
+        return $customer;
+    }
+
+    /**
+     * @param Mage_Customer_Model_Customer $customer
+     * @param Mage_Sales_Model_Order $order
+     */
+    private function _copyCustomerAttributesFromOrder($customer, $order)
+    {
         $customer->addData(array(
             'dob' => $order->getCustomerDob(),
             'email' => $order->getCustomerEmail(),
@@ -82,21 +105,24 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
             'taxvat' => $order->getCustomerTaxvat(),
             'website_id' => $order->getStore()->getWebsiteId(),
         ));
-
-        Mage::dispatchEvent('sales_create_customer_from_order', array('customer' => $customer, 'order' => $order));
-
-        $customer->save();
-        // @todo add Addresses
-        // @todo Set password
-        // @todo Send email
-
-        if (!$customer->getId()) {
-            throw new \Exception($this->__('Unable to create customer.'));
-        }
-
-        return $customer;
     }
 
+    /**
+     * @param Mage_Customer_Model_Customer $customer
+     */
+    protected function _generatePassword($customer)
+    {
+        // @todo Set password
+    }
+
+    /**
+     * @param Mage_Customer_Model_Customer $customer
+     * @param Mage_Sales_Model_Order $order
+     */
+    protected function _createCustomerAddressesFromOrder($customer, $order)
+    {
+        // @todo add Addresses
+    }
 
     /**
      * @return Max_CustomerCreateFromOrder_Helper_Data
