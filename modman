@@ -1,2 +1,6 @@
 app/etc/modules/Max_CustomerCreateFromOrder.xml app/etc/modules/Max_CustomerCreateFromOrder.xml
+app/code/community/Max/CustomerCreateFromOrder/etc/system.xml app/code/community/Max/CustomerCreateFromOrder/etc/system.xml
 app/code/community/Max/CustomerCreateFromOrder/etc/config.xml app/code/community/Max/CustomerCreateFromOrder/etc/config.xml
+app/code/community/Max/CustomerCreateFromOrder/Model/Observer.php app/code/community/Max/CustomerCreateFromOrder/Model/Observer.php
+app/code/community/Max/CustomerCreateFromOrder/controllers/Adminhtml/Sales/Order/CustomerController.php app/code/community/Max/CustomerCreateFromOrder/controllers/Adminhtml/Sales/Order/CustomerController.php
+app/code/community/Max/CustomerCreateFromOrder/Helper/Data.php app/code/community/Max/CustomerCreateFromOrder/Helper/Data.php
