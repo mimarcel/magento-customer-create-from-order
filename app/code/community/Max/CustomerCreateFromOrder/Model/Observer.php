@@ -9,8 +9,8 @@ class Max_CustomerCreateFromOrder_Model_Observer
         if ($block instanceof Mage_Adminhtml_Block_Sales_Order_View
             && $block->getOrder()->getCustomerGroupId() == Mage_Customer_Model_Group::NOT_LOGGED_IN_ID) {
             $block->addButton('create_customer_from_order', array(
-                'label' => $this->getHelper()->__('Create Customer'),
-                'onclick' => "confirmSetLocation('{$this->getConfirmMessage()}', '{$this->getUrl($block)}')",
+                'label' => $this->_getHelper()->__('Create Customer'),
+                'onclick' => "confirmSetLocation('{$this->_getConfirmMessage()}', '{$this->_getUrl($block)}')",
                 'class' => 'go'
             ));
         }
@@ -19,18 +19,18 @@ class Max_CustomerCreateFromOrder_Model_Observer
     /**
      * @return Max_CustomerCreateFromOrder_Helper_Data
      */
-    private function getHelper()
+    private function _getHelper()
     {
         return Mage::helper('customerCreateFromOrder');
     }
 
-    private function getConfirmMessage()
+    private function _getConfirmMessage()
     {
-        $message = $this->getHelper()->__('Are you sure you want to create a customer using the details from this order?')
+        $message = $this->_getHelper()->__('Are you sure you want to create a customer using the details from this order?')
             . ' '
-            . $this->getHelper()->__('The new customer will be notified by email.');
+            . $this->_getHelper()->__('The new customer will be notified by email.');
 
-        return $this->getHelper()->jsQuoteEscape($message);
+        return $this->_getHelper()->jsQuoteEscape($message);
     }
 
     /**
@@ -38,7 +38,7 @@ class Max_CustomerCreateFromOrder_Model_Observer
      *
      * @return string
      */
-    private function getUrl($block)
+    private function _getUrl($block)
     {
         return $block->getUrl('*/sales_order_customer/create');
     }
