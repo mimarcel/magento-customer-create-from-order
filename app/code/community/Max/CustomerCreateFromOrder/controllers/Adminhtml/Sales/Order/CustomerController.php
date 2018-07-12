@@ -67,6 +67,9 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
             'taxvat' => $order->getCustomerTaxvat(),
             'website_id' => $order->getStore()->getWebsiteId(),
         ));
+
+        Mage::dispatchEvent('sales_create_customer_from_order', array('customer' => $customer, 'order' => $order));
+
         $customer->save();
         // @todo add Addresses
         // @todo Set password
@@ -97,6 +100,9 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
         $order->setCustomerId($customer->getId());
         $order->setCustomerIsGuest(false);
         $order->setCustomerGroupId($customer->getGroupId());
+
+        Mage::dispatchEvent('sales_link_customer_to_order', array('customer' => $customer, 'order' => $order));
+
         $order->save();
     }
 }
