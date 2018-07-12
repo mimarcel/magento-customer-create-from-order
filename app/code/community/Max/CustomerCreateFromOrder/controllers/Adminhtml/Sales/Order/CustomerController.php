@@ -183,6 +183,7 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
         Mage::dispatchEvent('sales_link_customer_to_order', array('customer' => $customer, 'order' => $order));
 
         $order->save();
+        $order->getResource()->updateGridRecords(array($order->getId()));
     }
 
     /**
