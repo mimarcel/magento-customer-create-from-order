@@ -18,6 +18,7 @@ composer require mimarcel/magento-customer-create-from-order:dev-default
 
 ## Manual Install
 1. Copy all files from this module to your Magento project, except:
+    * .gitignore
     * README.md
     * composer.json
     * modman
