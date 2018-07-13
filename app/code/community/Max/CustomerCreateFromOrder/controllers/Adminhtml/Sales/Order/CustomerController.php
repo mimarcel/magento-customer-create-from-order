@@ -127,13 +127,21 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
      */
     protected function _createCustomerAddressesFromOrder($customer, $order)
     {
+        $customerAddresses = [];
         foreach ($order->getAddressesCollection() as $orderAddress) {
             /* @var Mage_Sales_Model_Order_Address $orderAddress */
             /* @var Mage_Customer_Model_Address $customerAddress */
             $customerAddress = Mage::getModel('customer/address');
             $customerAddress->setCustomerId($customer->getId());
             $this->_copyAddressAttributesFromOrderAddress($customerAddress, $orderAddress);
-            $customerAddress->save();
+
+            $alreadyExistingCustomerAddress = $this->_checkAddressDataExists($customerAddress, $customerAddresses);
+            if ($alreadyExistingCustomerAddress) {
+                $customerAddress = $alreadyExistingCustomerAddress;
+            } else {
+                $customerAddress->save();
+                $customerAddresses[] = $customerAddress;
+            }
 
             if ($order->getShippingAddressId() == $orderAddress->getId()) {
                 $customer->setData('default_shipping', $customerAddress->getId());
@@ -144,6 +152,23 @@ class Max_CustomerCreateFromOrder_Adminhtml_Sales_Order_CustomerController exten
         }
 
         $customer->save();
+    }
+
+    /**
+     * @param Mage_Customer_Model_Address $customerAddress
+     * @param Mage_Customer_Model_Address[] $customerAddresses
+     *
+     * @return Mage_Customer_Model_Address
+     */
+    protected function _checkAddressDataExists($customerAddress, $customerAddresses)
+    {
+        foreach ($customerAddresses as $_customerAddress) {
+            if (!array_diff($customerAddress->getData(), $_customerAddress->getData())) {
+                return $_customerAddress;
+            }
+        }
+
+        return null;
     }
 
     /**
